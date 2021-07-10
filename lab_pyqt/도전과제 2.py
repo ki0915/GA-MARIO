@@ -18,21 +18,20 @@ class MyApp(QWidget):
 
         self.show()
 
+        self.label_text = QLabel(self)
+        self.label_text.setText(self)
+        self.label_text.setGeometry(180, 100, 50, 100)
+
     # 키를 누를 때
     def keyPressEvent(self, event):
         key = event.key()
 
-        self.label_text = QLabel(self)
-        self.label_text.setText(key)
-        self.label_text.setGeometry(180, 100, 50, 100)
+        label_text
 
     # 키를 땔 때
 
     def keyReleaseEvent(self, event):
         key = event.key()
-        self.label_text = QLabel(self)
-        self.label_text.setText(key)
-        self.label_text.setGeometry(180, 100, 50, 100)
 
 
 if __name__ == '__main__':
