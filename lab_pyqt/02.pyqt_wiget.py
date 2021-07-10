@@ -21,9 +21,9 @@ class MyApp(QWidget):
         button.setGeometry(300, 200, 100, 100)
 
         # 텍스트
-        label_text = QLabel(self)
-        label_text.setText('가나다')
-        label_text.setGeometry(180, 100, 50, 100)
+        self.label_text = QLabel(self)
+        self.label_text.setText('가나다')
+        self.label_text.setGeometry(180, 100, 50, 100)
 
         # 이미지
         label_image = QLabel(self)
