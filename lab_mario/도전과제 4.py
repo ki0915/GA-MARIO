@@ -42,7 +42,6 @@ class MyApp(QWidget):
         label_image.setPixmap(pixmap)
         label_image.setGeometry(0, 0, 428, 480)
 
-        env.step()
 
 
         #창 띄우기
