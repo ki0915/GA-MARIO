@@ -17,10 +17,12 @@ class MyApp(QWidget):
 
         #창 띄우기
         self.show()
-    
+
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MyApp()
     sys.exit(app.exec())
+
 

@@ -5,33 +5,37 @@
 from PyQt5.QtWidgets import QApplication, QWidget
 
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget,QLabel
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel
 
 
 class MyApp(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.setFixedSize(1024, 768)
+        self.setFixedSize(324, 368)
 
         self.setWindowTitle('GA Mario')
 
+        self.text = QLabel(self)
+        self.text_1 = QLabel(self)
+
         self.show()
 
-        self.label_text = QLabel(self)
-        self.label_text.setText(self)
-        self.label_text.setGeometry(180, 100, 50, 100)
 
     # 키를 누를 때
     def keyPressEvent(self, event):
         key = event.key()
+        self.text.setText(str(key) + "press")
+        self.text.setGeometry(200, 300, 300, 50)
 
-        label_text
 
     # 키를 땔 때
 
     def keyReleaseEvent(self, event):
         key = event.key()
+
+        self.text_1.setText(str(key) + "release")
+        self.text_1.setGeometry(100, 200, 300, 50)
 
 
 if __name__ == '__main__':

@@ -5,7 +5,7 @@
 from PyQt5.QtWidgets import QApplication, QWidget
 
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication, QWidget,QLabel
 
 
 class MyApp(QWidget):
@@ -18,10 +18,12 @@ class MyApp(QWidget):
 
         self.show()
 
+
     #키를 누를 때
     def keyPressEvent(self, event):
         key = event.key()
         print(str(key) + 'press')
+
 
     #키를 땔 때
     
