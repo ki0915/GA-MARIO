@@ -11,7 +11,7 @@ class MyApp(QWidget):
         self.count = 1
 
         #창의 크기 고정
-        self.setFixedSize(1024, 768)
+        self.setFixedSize(324, 268)
 
         #창 제목
         self.setWindowTitle('GA Mario')
@@ -30,10 +30,9 @@ class MyApp(QWidget):
 
     # 주기적으로 실행할 함수
     def timer(self):
-        print('timer')
         self.count = self.count + 1
         self.text.setText(str(self.count))
-        self.text.setGeometry(100, 200, 100, 200)
+        self.text.setGeometry(100, 100, 100, 100)
 
 
 if __name__ == '__main__':
