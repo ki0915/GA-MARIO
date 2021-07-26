@@ -20,9 +20,9 @@ env.reset()
 
 screen = env.get_screen()
 
-print(screen.shape)
 
 class MyApp(QWidget):
+    screen = env.get_screen()
     def __init__(self):
         super().__init__()
 
