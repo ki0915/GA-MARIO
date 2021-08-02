@@ -15,7 +15,7 @@ class MyApp(QWidget):
         self.env = retro.make(game='SuperMarioBros-Nes', state='Level1-1')
         # 램 정보 가져오기
         self.ram = self.env.get_ram()
-        self.full_screen_tiles = self.ram[0x0500:0x069F + 1]
+
 
         # 새 게임 시작
         self.env.reset()
@@ -43,6 +43,7 @@ class MyApp(QWidget):
         self.show()
 
     def update_ram(self):
+        self.full_screen_tiles = self.ram[0x0500:0x069F + 1]
         full_screen_tiles_count = self.full_screen_tiles.shape[0]
         full_screen_page1_tile = self.full_screen_tiles[:full_screen_tiles_count // 2].reshape((13, 16))
         full_screen_page2_tile = self.full_screen_tiles[full_screen_tiles_count // 2:].reshape((13, 16))
