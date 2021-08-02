@@ -50,13 +50,6 @@ class MyApp(QWidget):
         self.update_screen()
 
 
-    def keyPressEvent(self, event):
-        key = event.key()
-        if key ==
-            self.button[5] = 1
-        elif key == event.key_Down:
-            self.button[6] = 1
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MyApp()
