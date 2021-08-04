@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QLabel
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QTimer
+from PyQt5.QtGui import QPainter, QPen, QBrush, QColor
 
 
 class MyApp(QWidget):
@@ -13,6 +14,11 @@ class MyApp(QWidget):
         super().__init__()
 
         self.env = retro.make(game='SuperMarioBros-Nes', state='Level1-1')
+        # 램 정보 가져오기
+
+        self.height = 0
+        self.width = 0
+
 
         # 새 게임 시작
         self.env.reset()
@@ -30,6 +36,11 @@ class MyApp(QWidget):
         self.label_image = QLabel(self)
         self.label_image.setGeometry(0, 0, 428, 480)
 
+        self.ram = self.env.get_ram()
+        self.full_screen_tiles = self.ram[0x0500:0x069F + 1]
+
+
+
         # 타이머 생성
         qtimer = QTimer(self)
         # 타이머에 실행할 함수 연결
@@ -38,6 +49,46 @@ class MyApp(QWidget):
         qtimer.start(1000//60)
         # 창 띄우기
         self.show()
+
+
+
+    def paintEvent(self, event):
+
+        # 그리기 도구
+        painter = QPainter()
+        # 그리기 시작
+        painter.begin(self)
+
+        full_screen_tiles_count = self.full_screen_tiles.shape[0]
+        full_screen_page1_tile = self.full_screen_tiles[:full_screen_tiles_count //2].reshape((13, 16))
+        full_screen_page2_tile = self.full_screen_tiles[full_screen_tiles_count //2:].reshape((13, 16))
+
+        full_screen_tile = np.concatenate((full_screen_page1_tile, full_screen_page2_tile), axis=1).astype(np.int)
+
+        print(full_screen_tile)
+
+
+
+        for i in full_screen_tile:
+
+            if i == 0:
+                painter.setPen(QPen(Qt.black, 1.0, Qt.SolidLine))
+
+                painter.setBrush(QBrush(Qt.gray))
+
+                painter.drawRect(500 + self.width, 10 + self.height, 10, 10)
+
+            else:
+                painter.setPen(QPen(Qt.black, 1.0, Qt.SolidLine))
+
+                painter.setBrush(QBrush(Qt.blue))
+
+                painter.drawRect(500 + self.width, 10 + self.height, 10, 10)
+
+                self.width += 10
+                if self.width % 16 == 0 and self.width != 0:
+                    self.height += 10
+
 
 
     def keyPressEvent(self, event):
@@ -89,11 +140,23 @@ class MyApp(QWidget):
         pixmap = pixmap.scaled(428, 480, Qt.IgnoreAspectRatio)
         self.label_image.setPixmap(pixmap)
 
+    def paint_screen_0(self, array):
+        painter = QPainter()
 
+        painter.begin(self)
+
+        painter.setPen(QPen(Qt.black, 1.0, Qt.SolidLine))
+
+        painter.setPen(QPen(QColor.fromRgb(255, 0, 0), 3.0, Qt.SolidLine))
+        # 브러쉬 설정 (채우기)
+        painter.setBrush(QBrush(Qt.gray))
+        # 직사각형
+        painter.drawRect(500, 10, 10, 10)
 
     def timer(self):
         self.env.step(np.array(self.button))
         self.update_screen()
+        self.paintEvent()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
