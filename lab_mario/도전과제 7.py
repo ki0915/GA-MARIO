@@ -21,6 +21,8 @@ class MyApp(QWidget):
         # 키 배열 B, NULL, SELECT, START, U, D, L, R, A
         self.button = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
+        self.ram = self.env.get_ram()
+
         # 창의 크기 고정
         self.setFixedSize(1200, 480)
 
@@ -38,6 +40,27 @@ class MyApp(QWidget):
         qtimer.start(1000//60)
         # 창 띄우기
         self.show()
+
+
+    def PainEvent(self):
+
+        # https://datacrystal.romhacking.net/wiki/Super_Mario_Bros.:RAM_map
+        #
+
+        full_screen_tiles = self.ram[0x0500:0x069F + 1]
+
+        print(full_screen_tiles.shape)
+        print(full_screen_tiles)
+
+        full_screen_tiles_count = full_screen_tiles.shape[0]
+
+        full_screen_page1_tile = full_screen_tiles[:full_screen_tiles_count // 2].reshape((13, 16))
+        full_screen_page2_tile = full_screen_tiles[full_screen_tiles_count // 2:].reshape((13, 16))
+
+        full_screen_tile = np.concatenate((full_screen_page1_tile, full_screen_page2_tile), axis=1).astype(np.int)
+
+        print(full_screen_tile)
+
 
 
     def keyPressEvent(self, event):
@@ -94,6 +117,7 @@ class MyApp(QWidget):
     def timer(self):
         self.env.step(np.array(self.button))
         self.update_screen()
+        self.PainEvent()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
