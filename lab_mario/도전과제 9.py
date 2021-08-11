@@ -16,6 +16,8 @@ class MyApp(QWidget):
         self.height = 0
         self.width = 0
 
+        self.plus_x = 0
+        self.plus_y = 0
 
         self.env = retro.make(game='SuperMarioBros-Nes', state='Level1-1')
         # 램 정보 가져오기
@@ -114,14 +116,30 @@ class MyApp(QWidget):
 
         full_screen_tile = np.concatenate((full_screen_page1_tile, full_screen_page2_tile), axis=1).astype(np.int)
 
+        player_position_x = ram[0x03AD]
+
+        # 0x03B8 Player y pos within current screen offset
+        # 현재 화면 속 플레이어 y 좌표
+
+        player_position_y = ram[0x03B8]
+
+        # 타일 좌표로 변환
+        player_tile_position_x = (player_position_x + 8) // 16
+        player_tile_position_y = (player_position_y + 8) // 16 - 1
+
+        print(player_tile_position_x, player_tile_position_y)
+
         painter = QPainter()
 
         painter.begin(self)
 
 
-        for first_arry in full_screen_tile:
+        for first_array in full_screen_tile:
 
-            for second_array in first_arry:
+            self.width = 0
+            self.height += 20
+
+            for second_array in first_array:
 
                 if second_array == 0:
                     painter.setPen(QPen(Qt.black, 1.0, Qt.SolidLine))
@@ -131,6 +149,7 @@ class MyApp(QWidget):
                     painter.drawRect(540 + self.width, 20 + self.height, 20, 20)
 
                     self.width += 20
+                    self.plus_x += 1
 
                 elif second_array == 84:
                     painter.setPen(QPen(Qt.black, 1.0, Qt.SolidLine))
@@ -141,6 +160,8 @@ class MyApp(QWidget):
 
                     self.width += 20
 
+                    self.plus_x += 1
+
                 elif second_array == 192:
                     painter.setPen(QPen(Qt.black, 1.0, Qt.SolidLine))
 
@@ -149,6 +170,7 @@ class MyApp(QWidget):
                     painter.drawRect(540 + self.width, 20 + self.height, 20, 20)
 
                     self.width += 20
+                    self.plus_x += 1
 
                 elif second_array == 193:
                     painter.setPen(QPen(Qt.black, 1.0, Qt.SolidLine))
@@ -158,6 +180,7 @@ class MyApp(QWidget):
                     painter.drawRect(540 + self.width, 20 + self.height, 20, 20)
 
                     self.width += 20
+                    self.plus_x += 1
 
                 elif second_array == 6:
                     painter.setPen(QPen(Qt.black, 1.0, Qt.SolidLine))
@@ -167,6 +190,7 @@ class MyApp(QWidget):
                     painter.drawRect(540 + self.width, 20 + self.height, 20, 20)
 
                     self.width += 20
+                    self.plus_x += 1
 
                 else:
                     painter.setPen(QPen(Qt.black, 1.0, Qt.SolidLine))
@@ -176,11 +200,23 @@ class MyApp(QWidget):
                     painter.drawRect(540 + self.width, 20 + self.height, 20, 20)
 
                     self.width += 20
+                    self.plus_x += 1
 
 
+                if player_tile_position_x == self.plus_x and player_tile_position_y == self.plus_y:
 
-            self.width = 0
-            self.height += 20
+
+                    painter.setPen(QPen(Qt.black, 1.0, Qt.SolidLine))
+
+                    painter.setBrush(QBrush(Qt.black))
+
+                    painter.drawRect(540 + self.width, 20 + self.height, 20, 20)
+
+                    self.width += 20
+
+
+            self.plus_x = 0
+            self.plus_y += 1
 
 
 
@@ -191,6 +227,7 @@ class MyApp(QWidget):
         self.update_screen()
         self.update()
         self.height = 0
+        self.plus_y = 0
 
 
 if __name__ == '__main__':
