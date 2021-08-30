@@ -30,6 +30,8 @@ class MyApp(QWidget):
         self.button = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 
+        console_width = 428
+        console_height = 480
 
         # 창의 크기 고정
         self.setFixedSize(1200, 480)
@@ -38,7 +40,7 @@ class MyApp(QWidget):
         self.setWindowTitle('GA Mario')
 
         self.label_image = QLabel(self)
-        self.label_image.setGeometry(0, 0, 428, 480)
+        self.label_image.setGeometry(0, 0, console_width, console_height)
 
 
 
@@ -57,21 +59,26 @@ class MyApp(QWidget):
     def keyPressEvent(self, event):
         key = event.key()
 
+        # 위로 이동
+
         if key == Qt.Key_Up:
             self.button[4] = 1
+        # 아래로 이동
 
         if key == Qt.Key_Down:
             self.button[5] = 1
+        # 왼쪽으로 이동
 
         if key == Qt.Key_Left:
             self.button[6] = 1
+        # 오른 쪽으로 이동
 
         if key == Qt.Key_Right:
             self.button[7] = 1
-
+        # Z키
         if key == Qt.Key_Z:
             self.button[8] = 1
-
+        # 달리기
         if key == Qt.Key_X:
             self.button[0] = 1
 
@@ -116,6 +123,20 @@ class MyApp(QWidget):
 
         full_screen_tile = np.concatenate((full_screen_page1_tile, full_screen_page2_tile), axis=1).astype(np.int)
 
+
+        current_screen_page = ram[0x071A]
+        # 0x071C	ScreenEdge X-Position, loads next screen when player past it?
+        # 페이지 속 현재 화면 위치
+        screen_position = ram[0x071C]
+
+        # 화면 오프셋
+        screen_offset = (256 * current_screen_page + screen_position) % 512
+        # 타일 화면 오프셋
+        screen_tile_offset = screen_offset // 16
+
+        print(screen_tile_offset)
+
+
         player_position_x = ram[0x03AD]
 
         # 0x03B8 Player y pos within current screen offset
@@ -129,10 +150,36 @@ class MyApp(QWidget):
 
         print(player_tile_position_x, player_tile_position_y)
 
+        enemy_horizon_position = ram[0x006E:0x0072 + 1]
+        # 0x0087-0x008B	Enemy x position on screen
+        # 자신이 속한 페이지 속 x 좌표
+        enemy_screen_position_x = ram[0x0087:0x008B + 1]
+        # 0x00CF-0x00D3	Enemy y pos on screen
+        enemy_position_y = ram[0x00CF:0x00D3 + 1]
+        # 적 x 좌표
+        enemy_position_x = (enemy_horizon_position * 256 + enemy_screen_position_x) % 512
+
+        print(enemy_position_x, enemy_position_y)
+
+        enemy_drawn = ram[0x000F: 0x0013 + 1]
+
+        print(enemy_drawn)
+
+        # 적 타일 좌표
+        enemy_tile_position_x = (enemy_position_x + 8) // 16
+        enemy_tile_position_y = (enemy_position_y - 8) // 16 - 1
+
+        print(enemy_tile_position_x, enemy_tile_position_y)
+
+
+
+
         painter = QPainter()
 
         painter.begin(self)
 
+
+        # 맵 정보 출력
 
         for first_array in full_screen_tile:
 
@@ -202,9 +249,22 @@ class MyApp(QWidget):
 
                     self.width += 20
 
-        painter.setPen(QPen(Qt.black, 1.0, Qt.SolidLine))
-        painter.setBrush(QBrush(Qt.darkGray))
-        painter.drawRect(540 + player_tile_position_x * 20, 20 + player_tile_position_y * 20 + 20, 20, 20)
+
+
+
+        for player_y in range(13):
+            for player_x in range(16):
+                painter.setPen(QPen(Qt.black, 1.0, Qt.SolidLine))
+                painter.setBrush(QBrush(Qt.darkGray))
+                painter.drawRect(540 + (player_tile_position_x + screen_tile_offset) * 20, 20 + (player_tile_position_y * 20) + 20, 20, 20)
+
+
+        for enemy in range(5):
+            if enemy_drawn[enemy] != 0:
+                painter.setPen(QPen(Qt.black, 1.0, Qt.SolidLine))
+                painter.setBrush(QBrush(Qt.red))
+                painter.drawRect(540 + (enemy_tile_position_x[enemy]) * 20, 20 + (enemy_tile_position_y[enemy] * 20) + 20, 20, 20)
+
 
 
 
