@@ -15,6 +15,7 @@ class MyApp(QWidget):
 
         self.height = 0
         self.width = 0
+        self.paint_area = 20
 
 
 
@@ -194,7 +195,7 @@ class MyApp(QWidget):
 
                     painter.setBrush(QBrush(Qt.gray))
 
-                    painter.drawRect(540 + self.width, 20 + self.height, 20, 20)
+                    painter.drawRect(540 + self.width, 20 + self.height, self.paint_area, self.paint_area)
 
                     self.width += 20
 
@@ -204,7 +205,7 @@ class MyApp(QWidget):
 
                     painter.setBrush(QBrush(Qt.blue))
 
-                    painter.drawRect(540 + self.width, 20 + self.height, 20, 20)
+                    painter.drawRect(540 + self.width, 20 + self.height, self.paint_area, self.paint_area)
 
                     self.width += 20
 
@@ -214,7 +215,7 @@ class MyApp(QWidget):
 
                     painter.setBrush(QBrush(Qt.green))
 
-                    painter.drawRect(540 + self.width, 20 + self.height, 20, 20)
+                    painter.drawRect(540 + self.width, 20 + self.height, self.paint_area, self.paint_area)
 
                     self.width += 20
 
@@ -224,7 +225,7 @@ class MyApp(QWidget):
 
                     painter.setBrush(QBrush(Qt.darkYellow))
 
-                    painter.drawRect(540 + self.width, 20 + self.height, 20, 20)
+                    painter.drawRect(540 + self.width, 20 + self.height, self.paint_area, self.paint_area)
 
                     self.width += 20
 
@@ -234,7 +235,7 @@ class MyApp(QWidget):
 
                     painter.setBrush(QBrush(Qt.red))
 
-                    painter.drawRect(540 + self.width, 20 + self.height, 20, 20)
+                    painter.drawRect(540 + self.width, 20 + self.height, self.paint_area, self.paint_area)
 
                     self.width += 20
 
@@ -245,7 +246,7 @@ class MyApp(QWidget):
 
                     painter.setBrush(QBrush(Qt.blue))
 
-                    painter.drawRect(540 + self.width, 20 + self.height, 20, 20)
+                    painter.drawRect(540 + self.width, 20 + self.height, self.paint_area, self.paint_area)
 
                     self.width += 20
 
@@ -254,16 +255,21 @@ class MyApp(QWidget):
 
         for player_y in range(13):
             for player_x in range(16):
-                painter.setPen(QPen(Qt.black, 1.0, Qt.SolidLine))
-                painter.setBrush(QBrush(Qt.darkGray))
-                painter.drawRect(540 + (player_tile_position_x + screen_tile_offset) * 20, 20 + (player_tile_position_y * 20) + 20, 20, 20)
-
-
+                if player_tile_position_x + screen_tile_offset > 31:
+                    painter.setPen(QPen(Qt.black, 1.0, Qt.SolidLine))
+                    painter.setBrush(QBrush(Qt.darkGray))
+                    painter.drawRect(540 + ((player_tile_position_x + screen_tile_offset) - 32 ) * self.paint_area, 20 + (player_tile_position_y * self.paint_area) + 20, self.paint_area, self.paint_area)
+                else:
+                    painter.setPen(QPen(Qt.black, 1.0, Qt.SolidLine))
+                    painter.setBrush(QBrush(Qt.darkGray))
+                    painter.drawRect(540 + (player_tile_position_x + screen_tile_offset) * self.paint_area,
+                                     20 + (player_tile_position_y * self.paint_area) + 20, self.paint_area,
+                                     self.paint_area)
         for enemy in range(5):
             if enemy_drawn[enemy] != 0:
                 painter.setPen(QPen(Qt.black, 1.0, Qt.SolidLine))
                 painter.setBrush(QBrush(Qt.red))
-                painter.drawRect(540 + (enemy_tile_position_x[enemy]) * 20, 20 + (enemy_tile_position_y[enemy] * 20) + 20, 20, 20)
+                painter.drawRect(540 + (enemy_tile_position_x[enemy]) * self.paint_area, 20 + (enemy_tile_position_y[enemy] * self.paint_area) + 20, self.paint_area, self.paint_area)
 
 
 
