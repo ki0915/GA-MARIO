@@ -18,7 +18,7 @@ full_screen_page2_tile = full_screen_tiles[full_screen_tile_count//2:].reshape((
 
 full_screen_tiles = np.concatenate((full_screen_page1_tile, full_screen_page2_tile), axis=1).astype(np.int)
 
-print(full_screen_tiles)
+
 
 # 0x071A	Current screen (in level)
 # 현재 화면이 속한 페이지 번호

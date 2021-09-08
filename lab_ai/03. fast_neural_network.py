@@ -9,24 +9,6 @@ def relu(x):
         return x
 
 
-class GA:
-
-    def select_roulette:
-
-    def select_rangking:
-
-    def select_elite_save:
-
-    def test_cross:
-
-    def change:
-
-    def evolve(self):
-        while 조건:
-            self.룰렛휠()
-            self.교배-SBX()
-            self.변이-정적변이()
-
 
 class Model:
     def __init__(self):

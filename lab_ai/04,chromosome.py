@@ -19,8 +19,10 @@ class Chromosome:
         self.stop_frames = 0
         self.win = 0
 
+
     def predict(self, data):
         l1 = relu(np.matmul(data, self.w1) + self.b1)
         output = sigmoid(np.matmul(l1, self.w2) + self.b2)
         result = (output > 0.5).astype(np.int)
         return result
+
