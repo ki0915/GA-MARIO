@@ -8,16 +8,15 @@ from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QPainter, QPen, QBrush, QColor
 
 
-relu = lambda x: np.max(0, x)
+relu = lambda x: np.maximum(0, x)
 sigmoid = lambda x: 1.0 / (1.0 + np.exp(-x))
+
 
 
 
 class MyApp(QWidget):
 
     def __init__(self):
-        super().__init__()
-
         self.height = 0
         self.width = 0
         self.paint_area = 20
@@ -35,7 +34,9 @@ class MyApp(QWidget):
         self.win = 0
 
 
-        self.env = retro.make(game='SuperMarioBros-Nes', state='Level8-1')
+
+        super().__init__()
+        self.env = retro.make(game='SuperMarioBros-Nes', state='Level1-1')
         # 램 정보 가져오기
 
 
@@ -68,6 +69,13 @@ class MyApp(QWidget):
         qtimer.start(1000//60)
         # 창 띄우기
         self.show()
+
+    def predict(self, data):
+        l1 = relu(np.matmul(data, self.w1) + self.b1)
+        output = sigmoid(np.matmul(l1, self.w2) + self.b2)
+        result = (output > 0.5).astype(np.int)
+        return result
+
 
 
 
@@ -126,6 +134,8 @@ class MyApp(QWidget):
         pixmap = pixmap.scaled(428, 480, Qt.IgnoreAspectRatio)
         self.label_image.setPixmap(pixmap)
 
+
+
     def paintEvent(self, event):
 
         ram = self.env.get_ram()
@@ -152,7 +162,6 @@ class MyApp(QWidget):
         self.screen_current_tiles = np.concatenate((full_screen_tile, full_screen_tile), axis=1)[:,
                        screen_tile_offset:screen_tile_offset + 16]
 
-        print(self.screen_current_tiles)
 
         player_position_x = ram[0x03AD]
 
@@ -183,10 +192,6 @@ class MyApp(QWidget):
         # 적 타일 좌표
         enemy_tile_position_x = (enemy_position_x + 8) // 16
         enemy_tile_position_y = (enemy_position_y - 8) // 16 - 1
-
-
-
-
 
 
         painter = QPainter()
@@ -285,22 +290,38 @@ class MyApp(QWidget):
                 painter.setBrush(QBrush(Qt.red))
                 painter.drawRect(540 + (enemy_tile_position_x[enemy]) * self.paint_area, 20 + (enemy_tile_position_y[enemy] * self.paint_area) + 20, self.paint_area, self.paint_area)
 
-    def predict(self, data):
-        l1 = relu(np.matmul(data, self.w1) + self.b1)
-        output = sigmoid(np.matmul(l1, self.w2) + self.b2)
-        result = (output > 0.5).astype(np.int)
-        return result
 
     def AI_control(self):
-        print(self.predict(self.self.screen_current_tiles))
+        result = self.predict(self.screen_current_tiles.flatten())
+        data = np.random.randint(0, 3, (13 * 16,), dtype=np.int)
+
+        self.button[4] = result[0]
+        # 아래로 이동
 
 
+        self.button[5] = result[1]
+        # 왼쪽으로 이동
+
+
+        self.button[6] = result[2]
+        # 오른 쪽으로 이동
+
+        self.button[7] = result[3]
+        # Z키
+
+        self.button[8] = result[4]
+        # 달리기
+
+        self.button[0] = result[5]
+
+        
     def timer(self):
         self.env.step(np.array(self.button))
         self.update_screen()
         self.update()
         self.height = 0
-        print(self.w1)
+        self.AI_control()
+
 
 
 
